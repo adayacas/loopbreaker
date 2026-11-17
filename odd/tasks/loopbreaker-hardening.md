@@ -1,6 +1,6 @@
 # Loopbreaker hardening
 
-Objective: close the P0 security/reliability issues and add an install wizard for optional config. Branch: none (workspace is not a git repository). Delivery: single change set. Test runner: `npm test`.
+Objective: close the P0 security/reliability issues and add an install wizard for optional config. Branch: `main` (pushed to `origin`). Delivery: single change set. Test runner: `npm test`.
 
 ## Specs
 
@@ -42,7 +42,7 @@ Lo que está bien, para no alarmar de más: cero llamadas de red en todo dist/ (
 - Decision: `install --project` only writes `./opencode.json`; it does not install `.opencode/node_modules`.
 - Decision: `.gitignore` prevents commits, not disk exposure; real fix is not persisting output + 0600.
 - Baseline: `npm test` 41/41 passing.
-- Workspace has no `.git`; no work-unit commits can be created here.
+- Workspace started without `.git`; it was initialized before pushing to `origin/main`.
 - Implementation: `npm test` 53/53 passing. Manual check in a temp project: `install --project --yes` replaced an unpinned entry with `@adayacas/loopbreaker@0.3.0`, created `.gitignore` with `.opencode/`, `init` wrote the default config, and `status` read it. New tests cover state/log redaction, legacy sanitization, 0644 hardening, symlink refusal, spec traversal, phase-card caps, pinned install, gitignore, wizard defaults, and the status tool without the peer. `npm pack --dry-run` includes `dist/src/wizard.js` and no tests.
 - Git: initialized the local repo and pushed the source to `origin/main` on GitHub. The remote had only an initial `LICENSE` commit; that LICENSE was preserved.
 - Pending: publish 0.3.0 and reinstall so the running 0.2.0 `aeg` cache is replaced (user-owned release step; npm requires 2FA).
