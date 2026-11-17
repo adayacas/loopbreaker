@@ -120,7 +120,14 @@ export function parseFrontmatter(text: string): Record<string, unknown> | null {
     lines.push({ indent: noComment.match(/^ */)![0].length, text: noComment.trim(), no: idx + 2 });
   });
   if (lines.length === 0) return {};
-  const [val] = parseBlock(lines, 0, lines[0]!.indent);
+  const [val, next] = parseBlock(lines, 0, lines[0]!.indent);
+  if (next < lines.length) {
+    // Un dedent por debajo de la primera clave descartaría claves en silencio:
+    // en un guardián, un scope que no se aplica debe fallar fuerte, no callarse.
+    throw new Error(
+      `frontmatter línea ${lines[next]!.no}: las claves de primer nivel deben compartir la indentación de la primera`,
+    );
+  }
   if (typeof val !== "object" || val === null || Array.isArray(val)) throw new Error("frontmatter: se esperaba un mapa");
   return val as Record<string, unknown>;
 }

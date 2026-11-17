@@ -57,6 +57,15 @@ exitCriteria:
   assert.throws(() => parseFrontmatter("---\nesto no es yaml\n---\n"));
 });
 
+test("frontmatter: claves de primer nivel menos indentadas que la primera se rechazan", () => {
+  // La primera clave sobre-indentada ancla el mapa: las siguientes, a nivel real,
+  // antes se descartaban en silencio y el scope de la fase dejaba de aplicarse.
+  assert.throws(
+    () => parseFrontmatter("---\n  id: p1\nscope:\n  denyGlobs: [x]\n---\n"),
+    /indentación/,
+  );
+});
+
 // ---------- bucles ----------
 test("bucle A-A-A se bloquea en la 3ª repetición idéntica", () => {
   const g = new Guard(project());
