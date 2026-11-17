@@ -7,6 +7,7 @@ Loop breaker para agentes de OpenCode: frena bucles de herramientas y limita el 
 npx @adayacas/loopbreaker install    # wizard: global o proyecto, versión y ajustes opcionales
 ```
 Reinicia OpenCode: descarga el paquete de npm por sí mismo al arrancar. No hay build ni copia de archivos.
+Nota: corré `npx` desde el proyecto donde vas a usar el plugin (o cualquier otro directorio). Si lo corrés dentro de un checkout del propio loopbreaker, npm resuelve el paquete local y falla con `sh: loopbreaker: command not found`.
 El instalador fija la versión exacta (`@adayacas/loopbreaker@0.3.0`) por defecto. Usa `--no-pin` para dejar `latest`; para actualizar, volvé a correr `install`.
 Para CI o instalación no interactiva: `install --yes` usa los defaults sin preguntar.
 Para un solo proyecto: `npx @adayacas/loopbreaker install --project`. Para quitarlo: `npx @adayacas/loopbreaker uninstall`.
