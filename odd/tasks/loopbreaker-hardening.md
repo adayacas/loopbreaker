@@ -45,4 +45,4 @@ Lo que está bien, para no alarmar de más: cero llamadas de red en todo dist/ (
 - Workspace started without `.git`; it was initialized before pushing to `origin/main`.
 - Implementation: `npm test` 53/53 passing. Manual check in a temp project: `install --project --yes` replaced an unpinned entry with `@adayacas/loopbreaker@0.3.0`, created `.gitignore` with `.opencode/`, `init` wrote the default config, and `status` read it. New tests cover state/log redaction, legacy sanitization, 0644 hardening, symlink refusal, spec traversal, phase-card caps, pinned install, gitignore, wizard defaults, and the status tool without the peer. `npm pack --dry-run` includes `dist/src/wizard.js` and no tests.
 - Git: initialized the local repo and pushed the source to `origin/main` on GitHub. The remote had only an initial `LICENSE` commit; that LICENSE was preserved.
-- Pending: publish 0.3.0 and reinstall so the running 0.2.0 `aeg` cache is replaced (user-owned release step; npm requires 2FA).
+- Published 0.3.0 (`latest` on npm). Pending: reinstall from outside the package repo so the running 0.2.0 `aeg` cache is replaced.
