@@ -10,7 +10,7 @@ Reinicia OpenCode: descarga el paquete de npm por sí mismo al arrancar. No hay 
 Nota: corré `npx` desde el proyecto donde vas a usar el plugin (o cualquier otro directorio). Si lo corrés dentro de un checkout del propio loopbreaker, npm resuelve el paquete local y falla con `sh: loopbreaker: command not found`.
 El instalador fija la versión exacta (`@adayacas/loopbreaker@0.3.0`) por defecto. Usa `--no-pin` para dejar `latest`; para actualizar, volvé a correr `install`.
 Para CI o instalación no interactiva: `install --yes` usa los defaults sin preguntar.
-Para un solo proyecto: `npx @adayacas/loopbreaker install --project`. Para quitarlo: `npx @adayacas/loopbreaker uninstall`.
+Para un solo proyecto: `npx @adayacas/loopbreaker install --project`. Para quitarlo: `npx @adayacas/loopbreaker uninstall [--project]` — sin `--project` quita la instalación global y te avisa si este proyecto también la tiene.
 
 El wizard puede crear `.loopbreaker.json` con los ajustes del anti-bucles y añadir `.opencode/` al `.gitignore` del proyecto.
 Instalación manual equivalente, en `opencode.json`: `{ "plugin": ["@adayacas/loopbreaker@0.3.0"] }`.

@@ -520,7 +520,17 @@ test("estancamiento: aplica también a read/grep con salida idéntica", () => {
 });
 
 // ---------- instalador ----------
-import { ensureGitignore, install, uninstall, init, configFile, PINNED_PLUGIN } from "../src/installer.js";
+import { ensureGitignore, install, isInstalled, uninstall, init, configFile, PINNED_PLUGIN } from "../src/installer.js";
+
+test("isInstalled: detecta el plugin en el config del directorio", () => {
+  const dir = project({ "opencode.json": JSON.stringify({ plugin: ["otro-plugin"] }) });
+  assert.ok(!isInstalled(dir));
+  install(dir);
+  assert.ok(isInstalled(dir));
+  uninstall(dir);
+  assert.ok(!isInstalled(dir));
+  assert.ok(!isInstalled(project())); // sin config: no instalado
+});
 
 test("install: crea config si no existe, pinea, es idempotente y uninstall revierte", () => {
   const dir = path.join(project(), "cfg");

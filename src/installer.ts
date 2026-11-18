@@ -139,6 +139,12 @@ export function uninstall(dir: string): InstallResult {
   return { ok: true, changed: true, file, message: `Plugin quitado de ${file}.` };
 }
 
+/** ¿El opencode.json de este directorio registra loopbreaker? */
+export function isInstalled(dir: string): boolean {
+  const r = read(configFile(dir));
+  return !("error" in r) && Array.isArray(r.data.plugin) && r.data.plugin.some(isLoopbreaker);
+}
+
 /** Crea un .loopbreaker.json en el proyecto (no sobrescribe). */
 export function init(projectDir: string, config: LoopbreakerConfig = DEFAULT_INIT): InstallResult {
   const file = path.join(projectDir, ".loopbreaker.json");

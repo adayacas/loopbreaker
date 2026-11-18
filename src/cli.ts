@@ -5,7 +5,7 @@ import * as path from "node:path";
 import { createInterface } from "node:readline/promises";
 import { PHASE_LOCK } from "./config-loader.js";
 import { Guard } from "./guard.js";
-import { ensureGitignore, globalConfigDir, init, install, uninstall } from "./installer.js";
+import { ensureGitignore, globalConfigDir, init, install, uninstall, isInstalled, configFile } from "./installer.js";
 import { runWizard } from "./wizard.js";
 import type { InstallChoices } from "./wizard.js";
 
@@ -69,9 +69,17 @@ async function main(): Promise<void> {
       if (r.changed) console.log("Reinicia OpenCode para cargarlo.");
       break;
     }
-    case "uninstall":
-      out(uninstall(flags.has("--project") ? root : globalConfigDir()));
+    case "uninstall": {
+      const project = flags.has("--project");
+      const r = uninstall(project ? root : globalConfigDir());
+      (r.ok ? console.log : console.error)(r.message);
+      if (!r.ok) process.exit(1);
+      // Quitar la global no toca la del proyecto: avisar para no dejar el plugin activo sin saberlo.
+      if (!project && isInstalled(root)) {
+        console.log(`Ojo: este proyecto también tiene el plugin en ${configFile(root)}; usá "loopbreaker uninstall --project" para quitarlo.`);
+      }
       break;
+    }
     case "init":
       out(init(root));
       break;
