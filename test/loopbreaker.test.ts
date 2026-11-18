@@ -103,6 +103,33 @@ test("ciclo A-B-A-B-A-B se bloquea", () => {
   assert.match(blocked ?? "", /ciclo|BLOQUEADO/);
 });
 
+test("ciclo A-B con salidas distintas = progreso, no se bloquea", () => {
+  const g = new Guard(project());
+  const A = { command: "npm run build" };
+  const B = { filePath: "log.txt" };
+  for (let i = 0; i < 3; i++) {
+    assert.equal(g.before(S, "bash", A), undefined, `A${i}`);
+    g.after(S, "bash", A, `build ${i}: listo`);
+    assert.equal(g.before(S, "read", B), undefined, `B${i}`);
+    g.after(S, "read", B, `log ${i}: sin cambios`);
+  }
+  assert.equal(g.before(S, "read", B), undefined, "6ª llamada del ciclo con salidas cambiantes");
+});
+
+test("ciclo A-B con salidas idénticas sí se bloquea", () => {
+  const g = new Guard(project());
+  const A = { command: "npm run build" };
+  const B = { filePath: "log.txt" };
+  let blocked: string | undefined;
+  for (let i = 0; i < 3 && !blocked; i++) {
+    blocked = g.before(S, "bash", A);
+    if (!blocked) g.after(S, "bash", A, "igual");
+    if (!blocked) blocked = g.before(S, "read", B);
+    if (!blocked) g.after(S, "read", B, "igual");
+  }
+  assert.match(blocked ?? "", /ciclo/);
+});
+
 test("falso positivo: npm test tras una edición NO es bucle (reset por escritura)", () => {
   const root = project({ ".loopbreaker.json": JSON.stringify({ maxConsecutiveRepeats: 3 }) });
   const g = new Guard(root);

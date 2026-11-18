@@ -110,7 +110,22 @@ export function check(state: SessionState, cfg: ResolvedConfig, tool: string, si
     const pattern = tail.slice(0, p);
     if (new Set(pattern).size < 2) continue; // un patrón uniforme ya lo cubre la regla 1
     if (tail.every((s, i) => s === pattern[i % p])) {
-      return { blocked: true, reason: `se detectó un ciclo de ${p} llamadas repetido ${n} veces sin progreso` };
+      // Salidas que cambian entre repeticiones del mismo elemento = progreso:
+      // el agente avanza aunque alterne, no es un bucle pegado.
+      let progress = false;
+      const firstHash = new Map<string, string>();
+      for (const e of run.slice(-(need - 1))) {
+        if (!e.resultHash) continue;
+        const first = firstHash.get(e.sig);
+        if (first === undefined) firstHash.set(e.sig, e.resultHash);
+        else if (first !== e.resultHash) {
+          progress = true;
+          break;
+        }
+      }
+      if (!progress) {
+        return { blocked: true, reason: `se detectó un ciclo de ${p} llamadas repetido ${n} veces sin progreso` };
+      }
     }
   }
   return { blocked: false };
