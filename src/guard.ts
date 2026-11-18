@@ -172,7 +172,13 @@ export class Guard {
   gitCheck(): string[] {
     this.reload();
     try {
-      const out = execFileSync("git", ["status", "--porcelain", "-uall"], { cwd: this.root, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
+      // Un git colgado (index.lock viejo, FS de red) no debe congelar al agente.
+      const out = execFileSync("git", ["status", "--porcelain", "-uall"], {
+        cwd: this.root,
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "ignore"],
+        timeout: 5000,
+      });
       const changed = out
         .split("\n")
         .filter(Boolean)
