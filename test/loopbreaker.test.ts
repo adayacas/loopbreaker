@@ -616,3 +616,12 @@ test("el plugin expone loopbreaker_status sin @opencode-ai/plugin", async () => 
   assert.equal(typeof tool.execute, "function");
   assert.match(String(await tool.execute({}, { sessionID: S })), /modo:/);
 });
+
+test("lib: expone la API programática vía el subpath ./lib", async () => {
+  const subpath = "@adayacas/loopbreaker/lib";
+  const lib: any = await import(subpath);
+  assert.equal(typeof lib.Guard, "function");
+  assert.equal(typeof lib.loadConfig, "function");
+  assert.equal(typeof lib.phaseCard, "function");
+  assert.equal(typeof lib.parseFrontmatter, "function");
+});
